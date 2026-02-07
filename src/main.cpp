@@ -1,29 +1,36 @@
 #include <Arduino.h>
-#include "hardware/sm16703_strip.h"
+#include "seeed/grove/ws2813_ring.h"
+#include "global/GData.h"
+#include "global/GObject.h"
 
 // ==================== 全局配置 ====================
-#define DATA_PIN    D0
 #define NUM_LEDS    200
-
-SM16703Strip strip(DATA_PIN, NUM_LEDS);
 
 void setup() {
     Serial.begin(115200);
-    Serial.println("示例1: 基础颜色控制");
+    Serial.println("呼吸灯测试");
 
-    strip.begin();
-    strip.setBrightness(255);
-    strip.clear();
-    strip.show();  // ✅ 必须调用show()才能真正清空
-    delay(1000);
+    strip0.begin();
+    strip0.setBrightness(255);
+    strip0.clear();
+    strip0.fillColor(255, 0, 0);
+    strip0.show();
 }
 
 void loop() {
-    // 逐个点亮红色
-    for (int i = 0; i < strip.numPixels(); i++) {
-        strip.clear();              // 每次清空
-        strip.setPixelColor(i, 255, 0, 0);  // 点亮当前LED
-        strip.show();               // 刷新
-        delay(50);                  // 延时50ms
+    strip0.fillColor(255, 0, 0);
+    strip0.show();
+    delay(1000);
+    strip0.fillColor(0, 255, 0);
+    strip0.show();
+    delay(1000);
+    strip0.fillColor(0, 0, 255);
+    strip0.show();
+    delay(1000);
+    for(int i = 0; i < NUM_LEDS; i ++){
+        strip0.setPixelColor(i, 255, 255, 255);
+        strip0.show();
+        delay(100);
     }
+    delay(1000);
 }
