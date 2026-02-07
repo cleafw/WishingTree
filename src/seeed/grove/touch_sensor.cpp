@@ -6,6 +6,7 @@
 
 TouchSensor::TouchSensor(uint8_t pin)
     : touchPin(pin), lastState(false) {
+    begin();
 }
 
 void TouchSensor::begin() {

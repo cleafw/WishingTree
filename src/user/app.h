@@ -8,6 +8,7 @@
 #include "global/GData.h"
 #include "global/GObject.h"
 
-void app_Task();
+void app_Task();    // 灯带任务
+
 
 #endif //WISHINGTREE_APP_H
