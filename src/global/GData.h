@@ -49,7 +49,7 @@
 
 // ==================== 触摸配置 ====================
 #define RELAY_COUNT_MIN         5      // 触摸循环检测次数 限制继电器打开时长
-#define RELAY_COUNT_MAX         60     // 触摸循环检测次数 限制继电器打开时长
+#define RELAY_COUNT_MAX         30     // 触摸循环检测次数 限制继电器打开时长
 
 // ==================== FreeRTOS 任务配置 ====================
 #define TASK_MAIN_STACK     16384
