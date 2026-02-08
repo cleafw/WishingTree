@@ -21,9 +21,9 @@
 #define STRIP_COUNT         4       // 灯带数量
 #define STRIP_NUM_LEDS      200     // 每条灯带 LED 数量
 #define STRIP_BRIGHTNESS    250     // 灯带默认亮度
-#define STRIP_COLOR_R       250     // 灯带固定颜色 R
-#define STRIP_COLOR_G       40      // 灯带固定颜色 G
-#define STRIP_COLOR_B       0       // 灯带固定颜色 B
+#define STRIP_COLOR_R       255      // 灯带固定颜色 R
+#define STRIP_COLOR_G       255      // 灯带固定颜色 G
+#define STRIP_COLOR_B       51       // 灯带固定颜色 B
 
 // ==================== 呼吸灯配置 ====================
 #define BREATHE_STEP_MS     5      // 呼吸灯每步间隔 (ms)
