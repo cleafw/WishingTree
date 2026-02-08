@@ -3,6 +3,8 @@
 //
 
 #include "app.h"
+#include <stdlib.h>     // 用于rand()和srand()
+#include <time.h>       // 用于time()
 
 //灯带测试
 void strips_Test() {
@@ -59,21 +61,46 @@ void strips_On() {
 }
 
 // 继电器控制(限制继电器打开时长)
-uint32_t relay_count = 0;   // 触摸程序循环计数
+uint32_t relay_count = 0;           // 触摸程序循环计数
+uint32_t relay_count_target = 0;    // 目标计数值(随机)
+bool last_touch_state = false;      // 上一次触摸状态
+bool relay_triggered = false;       // 继电器是否已被触发
 void relay_Control() {
-    if(touchSensor.isTouched() && relay_count < RELAY_COUNT_MAX){   // 触摸 并且没有超时
-        relay.on();             // 继电器开
-        relay_count ++;
-        printf("relay_count: %d\n", relay_count);
-    }else if(relay_count != 0 && relay_count < RELAY_COUNT_MIN){    // 触摸太短延长时间
-        relay_count ++;
-        printf("relay_count: %d\n", relay_count);
-    }else if(!touchSensor.isTouched()){
+    bool current_touch = touchSensor.isTouched();
+
+    // 触摸中，确保继电器关闭
+    if(current_touch){
         relay.off();            // 继电器关
+        relay_triggered = false;
         relay_count = 0;
-    }else{
-        relay.off();
+        relay_count_target = 0;
     }
+        // 检测到从触摸状态变为非触摸状态(手放开)
+    else if(last_touch_state && !current_touch && !relay_triggered){
+        // 生成RELAY_COUNT_MIN到RELAY_COUNT_MAX之间的随机目标值
+        relay_count_target = RELAY_COUNT_MIN + (rand() % (RELAY_COUNT_MAX - RELAY_COUNT_MIN + 1));
+        relay.on();             // 继电器开
+        relay_triggered = true;
+        relay_count = 1;
+        printf("relay_count_target: %d\n", relay_count_target);
+        printf("relay_count: %d\n", relay_count);
+    }
+        // 继电器已开启，继续计数
+    else if(relay_triggered && relay_count > 0 && relay_count < relay_count_target){
+        relay_count ++;
+        printf("relay_count: %d\n", relay_count);
+    }
+        // 达到目标时长，关闭继电器
+    else if(relay_count >= relay_count_target && relay_count_target > 0){
+        relay.off();            // 继电器关
+        relay_triggered = false;
+        relay_count = 0;
+        relay_count_target = 0;
+        printf("Relay OFF - target reached\n");
+    }
+
+    // 更新触摸状态
+    last_touch_state = current_touch;
 }
 
 // 灯带呼吸
@@ -96,7 +123,6 @@ void strips_Breathe() {
             strips[i]->show();
         }
         delay(BREATHE_STEP_MS);
-        relay_Control();        // 继电器控制
     }
 
     // 可选：在峰值处短暂停留
@@ -114,7 +140,6 @@ void strips_Breathe() {
             strips[i]->show();
         }
         delay(BREATHE_STEP_MS);
-        relay_Control();        // 继电器控制
     }
 
     // 可选：在谷值处短暂停留
